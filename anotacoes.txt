@@ -1,0 +1,68 @@
+======  VAGRANT =======
+Gerencia maquinas virtuais
+
+'Vagrantfile':
+Arquivo de intrucoes. O vagrant le esse arquivo no diretorio. Nao tem extensao
+Parece ser em linguage Python.
+Ex: Esse exemplo cria uma VM Ubuntu 32x
+------------------------------------------
+Vagrant.configure("2") do |config|
+    config.vm.box = "hashicorp/precise32"
+
+    config.vm.define :web do |web_config|
+    end
+end
+------------------------------------------
+
+> vagrant up
+Comando que sobe a VM e baixa tudo que for necessario.
+
+> vagrant ssh
+Entra na VM via SSH (simples no Linux)
+
+Instalando Java e Tomcat na VM:
+Entre via SSH e execute:
+sudo apt-get update
+sudo apt-get install openjdk-7-jre tomcat7 (tomcat sobe automaticamente)
+
+Dando um IP pra VM:
+incluir dentro da definicao da VM, ex
+------------------------------------------------
+   config.vm.define :web do |web_config|
+     web_config.vm.network "private_network", ip: "192.168.50.10"
+   end
+-----------------------------------------------
+
+>vagrant reload
+Derruba e sobe a maquina novamente, atualizando o que precisar
+
+>vagrant destroy
+Derruba maquina e apaga tudo que estava instalado.
+
+---- PUPPET ----
+Gerenciador de pacotes e aplicacoes
+
+Usando o puppet para indatar Java e Tomcat:
+Crei um arquivo com extensao .pp a seguir:
+-----------------------------------------
+exec { "apt-update":
+  command => "/usr/bin/apt-get update"
+}
+
+package { ["openjdk-7-jre", "tomcat7"]:
+    ensure => installed,
+    require => Exec["apt-update"]
+}
+-----------------------------------------
+
+Pasta Compartilhada
+A pasta onde a VM esta eh compartilhada dentro da VM sob o mapeamento '/vagrant'
+
+Para rodar o arquivo web.pp dentro da pasta manifests:
+sudo puppet apply /vagrant/manifests/web.pp
+
+DICA LINUX: apt-cache search <nome>: Procura o pacote que contem a string nome e similares
+dpkg -s <nome>: Verifica se nome esta instalado
+
+>vagrant halt
+Desliga a VM sem desisntalar nada.
