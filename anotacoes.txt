@@ -3,7 +3,7 @@ Gerencia maquinas virtuais
 
 'Vagrantfile':
 Arquivo de intrucoes. O vagrant le esse arquivo no diretorio. Nao tem extensao
-Parece ser em linguage Python.
+Parece ser em linguage Ruby.
 Ex: Esse exemplo cria uma VM Ubuntu 32x
 ------------------------------------------
 Vagrant.configure("2") do |config|
@@ -122,3 +122,21 @@ exec { "mysql-password":
     require => Exec["musicjungle-db"]
 }
 --------------------
+
+Funcao PUPPET e execucao da mesma para adicionar linha ao fim do arquivo se a
+mesma nao existir ainda
+---------------------------
+define file_line($file, $line) {
+   exec { "/bin/echo '${line}' >> '${file}'":
+      unless => "/bin/grep -qFx '${line}' '${file}'"
+   }
+}
+
+file_line { "production":
+    file => "/etc/default/tomcat7",
+    line => "JAVA_OPTS=\"\$JAVA_OPTS -Dbr.com.caelum.vraptor.environment=production\"",
+    require => Package["tomcat7"],
+    notify => Service["tomcat7"]
+}
+
+---------------------------
