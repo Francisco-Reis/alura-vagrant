@@ -4,7 +4,7 @@ Gerencia maquinas virtuais
 'Vagrantfile':
 Arquivo de intrucoes. O vagrant le esse arquivo no diretorio. Nao tem extensao
 Parece ser em linguage Ruby.
-Ex: Esse exemplo cria uma VM Ubuntu 32x
+Ex: Esse exemplo cria uma VM Ubuntu 32x com PUPPET
 ------------------------------------------
 Vagrant.configure("2") do |config|
     config.vm.box = "hashicorp/precise32"
@@ -16,6 +16,7 @@ end
 
 > vagrant up
 Comando que sobe a VM e baixa tudo que for necessario.
+Por padrao vai via VirtualBox, para usara AWS usar: vagrant up --provider=aws
 
 > vagrant ssh
 Entra na VM via SSH (simples no Linux)
@@ -34,7 +35,7 @@ incluir dentro da definicao da VM, ex
 -----------------------------------------------
 
 >vagrant reload
-Derruba e sobe a maquina novamente, atualizando o que precisar
+Derruba e sobe a maquina novamente, atualizando o que precisar, ñ roda provision
 
 >vagrant destroy
 Derruba maquina e apaga tudo que estava instalado.
@@ -146,3 +147,14 @@ web_config.vm.provision "puppet" do |puppet|
    puppet.manifest_file = "web.pp"
 end
 -----------------
+
+> vagrant provision
+Roda somente as provisoes novamente (Puppet)
+
+Arquivo para instalar o puppet via shell:
+'puppet.sh'
+
+Rodando shell no vagrant:
+---------------
+web_config.vm.provision "shell", path: "manifests/puppet.sh"
+---------------
