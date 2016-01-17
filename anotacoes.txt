@@ -158,3 +158,15 @@ Rodando shell no vagrant:
 ---------------
 web_config.vm.provision "shell", path: "manifests/puppet.sh"
 ---------------
+
+Podemos ter varias VMS no mesmo Vagrantfile. Ex:
+---------------
+config.vm.define :web do |web_config|
+...
+end
+config.vm.define :secundaria do |web_config|
+...
+end
+---------------
+> vagrant up web
+> vagrant up secundaria
