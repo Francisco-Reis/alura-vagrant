@@ -138,5 +138,11 @@ file_line { "production":
     require => Package["tomcat7"],
     notify => Service["tomcat7"]
 }
-
 ---------------------------
+
+Manda o Vagrant rodar o script puppet 'web.pp' dentro da pasta manifests
+-----------------
+web_config.vm.provision "puppet" do |puppet|
+   puppet.manifest_file = "web.pp"
+end
+-----------------
